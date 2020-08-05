@@ -1,13 +1,19 @@
 [package]
-name = "ibmfan-rust"
+name = "bsdfan"
 version = "0.1.0"
 authors = ["p0l1t1c1an <boicken19@gmail.com>"]
 edition = "2018"
 repository = "https://github.com/p0l1t1c1an/IBMfan"
 readme="README.md"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 libc = "0.2"
+signal-hook = "0.1.16"
 
+[[bin]]
+name = "bsdfan"
+path = "src/main.rs"
+
+[lib]
+name = "bsdfan"
+path = "src/lib.rs"
