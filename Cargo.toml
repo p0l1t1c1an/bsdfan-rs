@@ -3,7 +3,7 @@ name = "bsdfan"
 version = "0.1.0"
 authors = ["p0l1t1c1an <boicken19@gmail.com>"]
 edition = "2018"
-repository = "https://github.com/p0l1t1c1an/IBMfan"
+repository = "https://github.com/p0l1t1c1an/bsdfan-rust"
 readme="README.md"
 
 [dependencies]
