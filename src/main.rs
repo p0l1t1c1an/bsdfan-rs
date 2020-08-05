@@ -5,7 +5,7 @@ use std::sync::{
     atomic::{AtomicBool, Ordering},
     Arc,
 };
-use std::{thread, time::Duration};
+use std::{thread, time::{Duration, Instant}};
 
 fn main() -> FanResult {
     let running = Arc::new(AtomicBool::new(true));
@@ -30,13 +30,16 @@ fn main() -> FanResult {
     c.start_fan("/usr/local/etc/bsdfan.conf")?;
 
     let delay = Duration::from_millis(c.delay() as u64);
+    let mut timer = Instant::now();
 
     while running.load(Ordering::SeqCst) {
-        match c.get_temp() {
-            Some(t) => c.adjust_level(t),
-            None => Err(FanError::SysctlError(unsafe { *__error() })),
-        }?;
-        thread::sleep(delay);
+        if timer.elapsed() >= delay {
+            match c.get_temp() {
+                Some(t) => c.adjust_level(t),
+                None => Err(FanError::SysctlError(unsafe { *__error() })),
+            }?;
+            timer = Instant::now();
+        }
     }
 
     println!("Done");
