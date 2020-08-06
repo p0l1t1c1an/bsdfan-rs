@@ -1,5 +1,5 @@
 use std::os::unix::fs::PermissionsExt;
-use std::{fs, io::Result};
+use std::{fs, io::Result, path::Path};
 
 fn main() -> Result<()> {
     // Tell Cargo that if the given file changes, to rerun this build script.
@@ -19,7 +19,10 @@ fn main() -> Result<()> {
     perm.set_mode(0o755);
     start_file.set_permissions(perm)?;
 
-    fs::copy(config, format!("{}{}", etc, config))?;
+    let etc_conf = format!("{}{}", etc, config);
+    if !Path::new(&etc_conf).is_file() {
+        fs::copy(config, etc_conf)?;
+    }
 
     Ok(())
 }

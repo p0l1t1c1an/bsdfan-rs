@@ -48,6 +48,23 @@ mod controller {
         levels: Vec<Level>,
     }
 
+    impl Drop for Controller {
+        fn drop(&mut self) {
+            unsafe {
+                let fan_name: &'static CStr =
+                    CStr::from_bytes_with_nul(b"dev.acpi_ibm.0.fan\0").unwrap();
+
+                sysctlbyname(
+                    fan_name.as_ptr(),
+                    null_mut(),
+                    null_mut(),
+                    &AUTOMATIC as *const _ as *const c_void,
+                    C_SIZE,
+                );
+            }
+        }
+    }
+
     impl Controller {
         pub fn new() -> Self {
             Controller {
@@ -109,21 +126,6 @@ mod controller {
 
                 self.curr_lvl_index = 0;
                 return Ok(());
-            }
-        }
-
-        pub fn drop(&mut self) {
-            unsafe {
-                let fan_name: &'static CStr =
-                    CStr::from_bytes_with_nul(b"dev.acpi_ibm.0.fan\0").unwrap();
-
-                sysctlbyname(
-                    fan_name.as_ptr(),
-                    null_mut(),
-                    null_mut(),
-                    &AUTOMATIC as *const _ as *const c_void,
-                    C_SIZE,
-                );
             }
         }
 
