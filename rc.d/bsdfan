@@ -15,7 +15,7 @@ rcvar=${name}_enable
 pidfile="/var/run/${name}.pid"
 
 command="/usr/sbin/daemon"
-command_args="-c -f -P ${pidfile} -r /usr/local/bin/${name}"
+command_args="-c -f -P ${pidfile} -r /usr/local/sbin/${name}"
 
 load_rc_config $name
 
