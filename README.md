@@ -88,7 +88,8 @@ Let me know of usage and efficiency differences between theirs and mine.
   - Needs manual debug implementation for error types
   - Maybe have errors contain strings to print message
   
-- Binary installs to /usr/local/bin
+- Fix Installation method
   - The appropriate directory is /usr/local/sbin
-  - This may be a limitation with cargo installation forcing into a bin directory
+  - Don't use cargo install (makes .crates files)
+  - Use meson or make to install binary correctly
    
