@@ -18,9 +18,9 @@ Clone this repository:
 ```
 # git clone https://github.com/p0l1t1c1an/bsdfan-rust.git
 ```
-Then run cargo install as root:
+Then run make install as root:
 ```
-# cargo install --path /path/to/bsdfan-rust
+# make install
 ```
 This will install a binary called bsdfan, a config file as bsdfan.conf, and a startup script.
 
@@ -88,8 +88,7 @@ Let me know of usage and efficiency differences between theirs and mine.
   - Needs manual debug implementation for error types
   - Maybe have errors contain strings to print message
   
-- Fix Installation method
-  - The appropriate directory is /usr/local/sbin
-  - Don't use cargo install (makes .crates files)
-  - Use meson or make to install binary correctly
+- Fix Installation issue
+  - The program doesn't work properly if installation of rust uses rustup
+  - Right now, to use this program rust must be installed through pkg/ports
    
