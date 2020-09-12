@@ -61,7 +61,8 @@ level (3,42,48)
 level (4,46,52)
 level (5,50,56)
 level (6,54,60)
-level (7,58,32767)
+level (7,58,68)
+level (8,64,32767)
 ```
 
 ### Usage
