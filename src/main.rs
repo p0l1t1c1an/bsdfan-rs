@@ -1,6 +1,6 @@
 use bsdfan::controller::{Controller, FanError, FanResult};
 use libc::__error;
-use signal_hook::{iterator::Signals, SIGHUP, SIGINT, SIGTERM};
+use signal_hook::{iterator::Signals, consts::{SIGHUP, SIGINT, SIGTERM}};
 use std::sync::{
     atomic::{AtomicBool, Ordering},
     Arc,
@@ -11,11 +11,11 @@ fn main() -> FanResult {
     let running = Arc::new(AtomicBool::new(true));
     let r = running.clone();
 
-    let signals = Signals::new(&[SIGTERM, SIGINT, SIGHUP])?;
-    let signals_bg = signals.clone();
+    let mut signals = Signals::new(&[SIGTERM, SIGINT, SIGHUP])?;
+    let sig_handle = signals.handle();
 
     let handler = thread::spawn(move || {
-        for sig in &signals_bg {
+        for sig in &mut signals {
             println!("Received signal {:?}", sig);
             match sig {
                 SIGTERM | SIGINT | SIGHUP => {
@@ -41,7 +41,7 @@ fn main() -> FanResult {
 
     println!("Done");
 
-    signals.close();
+    sig_handle.close();
     handler.join().expect("singal handler panic");
 
     Ok(())
