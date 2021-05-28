@@ -1,7 +1,7 @@
-# bsdfan-rust
+# bsdfan-rs
 ### A simple fan controller written in Rust for FreeBSD Thinkpads
 
-This is a recreation of bsdfan, https://github.com/claudiozz/bsdfan, in the memory safe Rust language.
+This is a recreation of bsdfan, https://github.com/claudiozz/bsdfan, in the Rust language.
 
 ### Requirements
 In order to utilize this program, Freebsd's Thinkpad ACPI drivers need to be loaded. 
@@ -16,9 +16,13 @@ Alternatively, you can load the driver as a module at boot time, place the follo
 ### Installation
 Clone this repository:
 ```
-# git clone https://github.com/p0l1t1c1an/bsdfan-rust.git
+$ git clone https://github.com/p0l1t1c1an/bsdfan-rust.git
 ```
-Then run make install as root:
+Then run make to compile the program:
+```
+$ make
+```
+Finally, run make install as root
 ```
 # make install
 ```
@@ -71,7 +75,7 @@ To run the program call the following command as root:
 # bsdfan
 ```
 
-To enable bsdfan-rust at startup include the following to your /etc/rc.conf:
+To enable bsdfan-rs at startup include the following to your /etc/rc.conf:
 
 `bsdfan_enable="YES"`
 
@@ -88,8 +92,4 @@ Let me know of usage and efficiency differences between theirs and mine.
 - Improve verbosity of errors
   - Needs manual debug implementation for error types
   - Maybe have errors contain strings to print message
-  
-- Fix Installation issue
-  - The program doesn't work properly if installation of rust uses rustup
-  - Right now, to use this program rust must be installed through pkg/ports
    
