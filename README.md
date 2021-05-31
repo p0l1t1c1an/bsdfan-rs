@@ -16,7 +16,11 @@ Alternatively, you can load the driver as a module at boot time, place the follo
 ### Installation
 Clone this repository:
 ```
-$ git clone https://github.com/p0l1t1c1an/bsdfan-rust.git
+$ git clone https://github.com/p0l1t1c1an/bsdfan-rs.git
+```
+cd into the cloned repo:
+```
+$ cd bsdfan-rs
 ```
 Then run make to compile the program:
 ```
@@ -79,6 +83,22 @@ To enable bsdfan-rs at startup include the following to your /etc/rc.conf:
 
 `bsdfan_enable="YES"`
 
+
+### Uninstallation
+First, cd back into the cloned repo
+```
+$ cd /path/to/bsdfan-rs
+```
+Then, simply run make uninstall as root
+```
+# make uninstall
+```
+This will remove the binary and startup script.
+Your config file will still exist and will have to be removed manually.  
+You can do this by running rm on the config as root.
+```
+# rm /usr/local/etc/bsdfan.conf
+```
 
 ### Errors
 `Need to write`
