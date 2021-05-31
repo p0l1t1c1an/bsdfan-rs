@@ -14,10 +14,6 @@ signal-hook = "0.3"
 name = "bsdfan"
 path = "src/main.rs"
 
-[lib]
-name = "bsdfan"
-path = "src/lib.rs"
-
 # Defaults for release profile
 [profile.release]
 opt-level = 3

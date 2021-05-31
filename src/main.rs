@@ -1,4 +1,8 @@
-use bsdfan::controller::{Controller, FanError, FanResult};
+pub mod controller;
+pub mod level;
+pub mod parser;
+
+use controller::{Controller, FanError, FanResult};
 use libc::__error;
 use signal_hook::{iterator::Signals, consts::{SIGHUP, SIGINT, SIGTERM}};
 use std::sync::{
