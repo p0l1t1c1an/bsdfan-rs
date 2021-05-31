@@ -39,7 +39,8 @@ That means you can configure the fan levels as follows:
 ```
 level(Number, Min_temp, Max_temp)
 
-Number is the level number to be from 0 (idle) to 7 (full speed)
+Number is the level number to be from 0 (idle) to 7/8 (full speed).
+Some thinkpads support 7 as max and some have 8 as max.  
 Min_temp is the temperature at which the program jumps back a level.
 Max_temp is the temperature at which the program jumps up a level.
 
@@ -62,15 +63,14 @@ speed to 2000 milliseconds, or 2 seconds.
 This default config is installed unless a previous one already exists:
 ```
 delay 3000
-level (0,0,36)
-level (1,34,40)
-level (2,38,44)
-level (3,42,48)
-level (4,46,52)
-level (5,50,56)
-level (6,54,60)
-level (7,58,68)
-level (8,64,32767)
+level (0,0,44)
+level (1,40,48)
+level (2,44,52)
+level (3,48,56)
+level (4,52,60)
+level (5,56,64)
+level (6,60,68)
+level (7,64,32767)
 ```
 
 ### Usage
