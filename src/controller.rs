@@ -55,7 +55,7 @@ impl Controller {
         Ok(())
     }
 
-    pub fn adjust_level(&mut self, temp: i32) -> FanResult<()> {
+    pub fn adjust_level(&mut self, temp: f32) -> FanResult<()> {
         let levels = self.config.levels();
         let curr_level = &levels[self.curr_index];
 
@@ -72,10 +72,11 @@ impl Controller {
         Ok(())
     }
 
-    pub fn get_temp(&self) -> FanResult<i32> {
-        if let CtlValue::Int(temp) = self.temp_ctl.value()? {
-            Ok((temp  / 10) - 273)
+    pub fn get_temp(&self) -> FanResult<f32> {
+        if let CtlValue::Temperature(temp) = self.temp_ctl.value()? {
+            Ok(temp.celsius())
         } else {
+            println!("{:?}", self.temp_ctl.value()?);
             Err(FanError::WrongTempType)
         }
     }

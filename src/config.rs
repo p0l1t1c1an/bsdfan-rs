@@ -12,20 +12,20 @@ pub struct Level {
     num: i32,
 
     #[serde(alias = "minimum", alias = "min_temp")]
-    min: i32,
+    min: f32,
     
     #[serde(alias = "maximum", alias = "max_temp")]
-    max: i32,
+    max: f32,
 }
 
 impl Level {
     pub fn num(&self) -> i32 {
         self.num
     }
-    pub fn min(&self) -> i32 {
+    pub fn min(&self) -> f32 {
         self.min
     }
-    pub fn max(&self) -> i32 {
+    pub fn max(&self) -> f32 {
         self.max
     }
 }
@@ -48,10 +48,10 @@ pub enum ConfigError {
     NonAscendingLevels(i32, i32, usize, usize),
  
     #[error("Level {0}'s min temp {1}C is larger than it's max temp {2}C")]
-    MinLargerThanMax(i32, i32, i32),   
+    MinLargerThanMax(i32, f32, f32),   
 
     #[error("Level {0}'s max temp {1}C doesn't go past level {2}'s min temp {3}C")]
-    RangesDoNotOverlap(i32, i32, i32, i32),
+    RangesDoNotOverlap(i32, f32, i32, f32),
 }
 
 #[derive(Debug, Deserialize)]
@@ -94,8 +94,8 @@ impl Config {
             let curr_min = levels[i].min();
             let curr_max = levels[i].max();
             
-            let next_num = levels[i].num();
-            let next_min = levels[i].min();
+            let next_num = levels[i+1].num();
+            let next_min = levels[i+1].min();
 
             if curr_num == next_num {
                 return Err(ConfigError::RepeatedLevels(curr_num, i, i+1));

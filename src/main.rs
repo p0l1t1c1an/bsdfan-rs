@@ -28,14 +28,13 @@ fn main() -> FanResult<()> {
         }
     });
 
-    let mut control = Controller::new("/usr/local/etc/bsdfan.conf")?;
+    let mut control = Controller::new("/usr/local/etc/bsdfan.toml")?;
     control.start()?;
 
     let delay = Duration::from_millis(control.delay());
 
     while running.load(Ordering::SeqCst) {
-        let temp = control.get_temp()?;
-        control.adjust_level(temp)?;
+        control.adjust_level(control.get_temp()?)?;
         thread::sleep(delay);
     }
 
