@@ -1,20 +1,21 @@
 ## Example bsdfan.toml config
 
-# Delay in milliseconds
-
-delay = 2000
-
+# Optional delay in milliseconds (u64) 
+# default is 2000 milliseconds (2 seconds)
+#
+# delay = 2000
+#
 # 
 # Levels contains the set of all levels the fan will switch between 
 # 
-# num is the fan_level from 0 (idle) to 7/8 (max speed)
+# num (i32) is the fan_level from 0 (idle) to 7/8 (max speed)
 # Some thinkpads support 7 as max and some have 8 as max.
 # Safest to just set max to 7, if you don't know for your device
 #
-# min is the temperature at which the program jumps back a level.
-# max is the temperature at which the program jumps up a level.
+# min (f32) is the temperature at which the program jumps back a level.
+# max (f32) is the temperature at which the program jumps up a level.
 #
-# Can't repeat nums
+# Can NOT repeat nums
 # Placement order of nums doesn't matter, but max of the previous
 # must be greater than the min of the next (once sorted) 
 #
