@@ -1,9 +1,8 @@
-pub mod controller;
-pub mod level;
-pub mod parser;
+mod controller;
+pub mod config;
 
-use controller::{Controller, FanError, FanResult};
-use libc::__error;
+use controller::{Controller, FanResult};
+
 use signal_hook::{iterator::Signals, consts::{SIGHUP, SIGINT, SIGTERM}};
 use std::sync::{
     atomic::{AtomicBool, Ordering},
@@ -11,7 +10,7 @@ use std::sync::{
 };
 use std::{thread, time::Duration};
 
-fn main() -> FanResult {
+fn main() -> FanResult<()> {
     let running = Arc::new(AtomicBool::new(true));
     let r = running.clone();
 
@@ -20,7 +19,6 @@ fn main() -> FanResult {
 
     let handler = thread::spawn(move || {
         for sig in &mut signals {
-            println!("Received signal {:?}", sig);
             match sig {
                 SIGTERM | SIGINT | SIGHUP => {
                     r.store(false, Ordering::SeqCst);
@@ -30,20 +28,18 @@ fn main() -> FanResult {
         }
     });
 
-    let mut c = Controller::new();
-    c.start_fan("/usr/local/etc/bsdfan.conf")?;
+    let mut control = Controller::new("/usr/local/etc/bsdfan.conf")?;
+    control.start()?;
 
-    let delay = Duration::from_millis(c.delay() as u64);
+    let delay = Duration::from_millis(control.delay());
 
     while running.load(Ordering::SeqCst) {
-        match c.get_temp() {
-            Some(t) => c.adjust_level(t),
-            None => Err(FanError::SysctlError(unsafe { *__error() })),
-        }?;
+        let temp = control.get_temp()?;
+        control.adjust_level(temp)?;
         thread::sleep(delay);
     }
 
-    println!("Done");
+    control.stop()?;
 
     sig_handle.close();
     handler.join().expect("singal handler panic");
