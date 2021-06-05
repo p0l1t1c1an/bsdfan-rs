@@ -1,7 +1,7 @@
 # bsdfan-rs
 ### A simple fan controller written in Rust for FreeBSD Thinkpads
 
-This is a recreation of bsdfan, https://github.com/claudiozz/bsdfan, in the Rust language.
+This is a recreation of [bsdfan](https://github.com/claudiozz/bsdfan) in the Rust language.
 
 ### Requirements
 In order to utilize this program, Freebsd's Thinkpad ACPI drivers need to be loaded. 
@@ -9,9 +9,14 @@ You can compile the driver into your kernel by placing the following line in you
 
 `device acpi_ibm`
 
-Alternatively, you can load the driver as a module at boot time, place the following line into your /boot/loader.conf:
+You can load the driver as a module at boot time by placing the following line into your /boot/loader.conf:
 
 `acpi_ibm_load="YES"`
+
+Or you can manually load it:
+
+`# kldload acpi_ibm`
+
 
 ### Installation
 Clone this repository:
@@ -33,45 +38,56 @@ Finally, run make install as root
 This will install a binary called bsdfan, a config file as bsdfan.conf, and a startup script.
 
 ### Config
-Located at /usr/local/etc/bsdfan.conf   
-The configuration is the same as the original bsdfan, but with a delay setting.  
-That means you can configure the fan levels as follows:
-```
-level(Number, Min_temp, Max_temp)
+Located at /usr/local/etc/bsdfan.toml    
 
-Number is the level number to be from 0 (idle) to 7/8 (full speed).
+#### Delay
+There is an optional delay option in milliseconds  
+Its default value is 2000 milliseconds (2 seconds)
+
+Can be set like so:
+```
+delay = 3000
+```
+
+#### Levels
+Levels is the set of all levels the fan will switch between.  
+Each level has its number (num), min_temp (min), and max_temp (max). 
+
+This is default config that is installed unless a previous one already exists:
+```
+Levels = [
+{num = 0, min =  0, max = 44}, 
+{num = 1, min = 40, max = 48},
+{num = 2, min = 44, max = 52},
+{num = 3, min = 48, max = 56},
+{num = 4, min = 52, max = 60},
+{num = 5, min = 56, max = 64},
+{num = 6, min = 60, max = 68},
+{num = 7, min = 64, max = 32767},
+]
+```
+
+num (i32) is the fan_level from 0 (idle) to 7/8 (max speed).   
 Some thinkpads support 7 as max and some have 8 as max.  
-Min_temp is the temperature at which the program jumps back a level.
-Max_temp is the temperature at which the program jumps up a level.
+Safest to just set max to 7, if you don't know for your device.  
 
-Level numbers must be in ascending order and at least 2 must be declared.
-Each level must be declared on separate lines
-The Min_temperature for the first level must be equal to 0.
-The Max_temperature for the last level must be greater than 150, 
-since that is what the original bsdfan has set as the max.
-```
-As well, you can configure the delay in the program:
-```
-delay Millis
+min (f32) is the temperature at which the program jumps back a level.  
+max (f32) is the temperature at which the program jumps up a level.  
 
-Millis is the delay in milliseconds that program waits 
-between checks of you computers temperature.
-This config option is voluntary and the program will set the delay
-speed to 2000 milliseconds, or 2 seconds.
-```
+**Other Rules**  
+You can NOT repeat nums in multiple levels set.  
+The placement order of nums doesn't matter and your levels will be sort after being read.  
+However, max of a level must be greater than the min of the next level once it has been sorted. 
 
-This default config is installed unless a previous one already exists:
-```
-delay 3000
-level (0,0,44)
-level (1,40,48)
-level (2,44,52)
-level (3,48,56)
-level (4,52,60)
-level (5,56,64)
-level (6,60,68)
-level (7,64,32767)
-```
+#### Aliases
+Aliases are also set is you want to change the variable names.
+
+**delay** to delay_millis  
+**Levels** to levels  
+**num** to number, lvl, or level  
+**min** to min_temp or minimum  
+**max** to max_temp or maximum  
+
 
 ### Usage
 To run the program call the following command as root: 
@@ -100,16 +116,6 @@ You can do this by running rm on the config as root.
 # rm /usr/local/etc/bsdfan.conf
 ```
 
-### Errors
-`Need to write`
-
-#### Acknowledgements
-This program is heavily based off of bsdfan, https://github.com/claudiozz/bsdfan.   
-Check out [@claudiozz](https://github.com/claudiozz) and their program.   
-Let me know of usage and efficiency differences between theirs and mine.
-
-#### Known Issues and Potential Improvements
-- Improve verbosity of errors
-  - Needs manual debug implementation for error types
-  - Maybe have errors contain strings to print message
-   
+### Acknowledgements
+This program was somewhat based off of bsdfan, https://github.com/claudiozz/bsdfan.   
+Check out [@claudiozz](https://github.com/claudiozz) and their programs.   
