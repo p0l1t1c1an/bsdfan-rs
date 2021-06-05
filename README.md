@@ -75,9 +75,9 @@ min (f32) is the temperature at which the program jumps back a level.
 max (f32) is the temperature at which the program jumps up a level.  
 
 **Other Rules**  
-You can NOT repeat nums in multiple levels set.  
-The placement order of nums doesn't matter and your levels will be sort after being read.  
-However, max of a level must be greater than the min of the next level once it has been sorted. 
+You can NOT repeat the same num twice in Levels.  
+The placement order of nums doesn't matter, but your levels will be sort by num after being read.  
+However, the max of a level must be greater than the min of the next level once it has been sorted. 
 
 #### Aliases
 Aliases are also set is you want to change the variable names.
