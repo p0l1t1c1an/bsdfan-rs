@@ -32,12 +32,15 @@ impl Level {
 
 #[derive(Debug, Error)]
 pub enum ConfigError {
+
+    // Parsing Errors
     #[error("{0}")]
     FileError(#[from] std::io::Error),
 
     #[error("{0}")]
     TomlError(#[from] toml::de::Error),
-    
+
+    // Sanity check errors
     #[error("Your config file needs at least one level set")]
     NotEnoghLevels,
     
@@ -52,6 +55,18 @@ pub enum ConfigError {
 
     #[error("Level {0}'s max temp {1}C doesn't go past level {2}'s min temp {3}C")]
     RangesDoNotOverlap(i32, f32, i32, f32),
+    
+    #[error("Level {0}'s min temp {1}C is higher than or equal to level {2}'s min temp {3}C")]
+    NextMinSmaller(i32, f32, i32, f32),
+    
+    #[error("Level {0}'s max temp {1}C is higher than or equal to level {2}'s max temp {3}C")]
+    NextMaxSmaller(i32, f32, i32, f32),
+
+    #[error("The greatest level set is {0} which is higher than the max level of 8")]
+    LevelsTooHigh(i32),
+    
+    #[error("The lowest level is {0} which is lower than the min level of 0")]
+    LevelsTooLow(i32),    
 }
 
 #[derive(Debug, Deserialize)]
@@ -59,7 +74,7 @@ pub struct Config {
     #[serde(alias = "delay_millis")]
     delay: Option<u64>,
 
-    #[serde(alias = "Levels")]
+    #[serde(alias = "Levels")] 
     levels: Vec<Level>,
 }
 
@@ -96,15 +111,29 @@ impl Config {
             
             let next_num = levels[i+1].num();
             let next_min = levels[i+1].min();
+            let next_max = levels[i+1].max();
 
-            if curr_num == next_num {
+            // Levels in Range
+            if i == 0 && curr_num < 0 {
+                return Err(ConfigError::LevelsTooLow(curr_num));
+            } else if i == levels.len() - 1 && curr_num > 8 {
+                return Err(ConfigError::LevelsTooHigh(curr_num));
+            }
+            // Levels can't repeat
+            else if curr_num == next_num {
                 return Err(ConfigError::RepeatedLevels(curr_num, i, i+1));
-            } else if curr_num > next_num {
+            } 
+            // Levels are in order 
+            else if curr_num > next_num {
                 return Err(ConfigError::NonAscendingLevels(curr_num, next_num, i, i+1));
             } else if curr_min >= curr_max {
                 return Err(ConfigError::MinLargerThanMax(curr_num, curr_min, curr_max));
             } else if curr_max < next_min {
                 return Err(ConfigError::RangesDoNotOverlap(curr_num, curr_max, next_num, next_min));
+            } else if curr_min >= next_min {
+                return Err(ConfigError::NextMinSmaller(curr_num, curr_min, next_num, next_min));
+            } else if curr_max >= next_max {
+                return Err(ConfigError::NextMaxSmaller(curr_num, curr_max, next_num, next_max));
             }
 
             i += 1;

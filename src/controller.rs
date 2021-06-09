@@ -18,7 +18,7 @@ pub enum FanError {
     #[error("{0}")]
     SignalError(#[from] std::io::Error),
 
-    #[error("Temp Ctl didn't return an i32 value")]
+    #[error("Temp Ctl didn't return an Temperature value")]
     WrongTempType,
 }
 
